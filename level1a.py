@@ -1,6 +1,41 @@
 #Mock Hackathon
 #Level 1
 import json
+def findSlots(qty):  
+    slots=[]
+    while(True):
+        if(len(qty)==0):
+            return slots
+        if(len(qty)==1):
+            slots.append([qty[0]])
+            return slots
+        dp=[[0 for i in range(capacity+1)] for j in range(len(qty)+1)]
+        for i in range(len(qty)+1):
+            dp[i][0]=0
+            dp[0][i]=0
+        for i in range(1,len(qty)+1):
+            for j in range(1,capacity+1):
+                if(j>qty[i-1]):
+                    dp[i][j]=max(dp[i-1][j],dp[i-1][j-qty[i-1]]+qty[i-1])
+                else:
+                    dp[i][j]=dp[i-1][j]
+        path=[]
+        i=len(qty)
+        j=capacity
+        while(i>0 and j>0):
+            if(dp[i-1][j]==dp[i][j]):
+                i=i-1
+            else:
+                path.append(qty[i])
+                if(j-qty[i-1]>0):
+                    j=j-qty[i-1]
+                    i-=1
+                else:
+                    break
+        slots.append(path)
+        temp=[qty[i] for i in range(len(qty)) if qty[i] not in path]
+        qty=temp
+    return slots
 
 """def findSlots(restDist,dMat):
     catered=[]
@@ -28,7 +63,7 @@ import json
     return catered"""
         
 
-"""f1=open("C:/Users/TEMP/Desktop/Input data/level1a.json")
+f1=open("C:/Users/TEMP/Desktop/Input data/level1a.json")
 ip1=json.load(f1)
 
 n=ip1['n_neighbourhoods']
@@ -45,9 +80,9 @@ restDist=ip1['restaurants']['r0']['neighbourhood_distance']
 
 capacity=ip1['vehicles']['v0']['capacity']
 
-print(findSlots(restDist,dMat)) """
+print(findSlots(qty)) 
 
-capacity=70
+"""capacity=70
 qty=[30,20,40,10,50]
 dMat=[[0,2,3,3,6],
       [2,0,2,7,7],
@@ -55,47 +90,11 @@ dMat=[[0,2,3,3,6],
       [3,7,6,0,4],
       [6,7,2,4,0]]
 rDist=[2,3,5,1,4]
-slots=[]
+slots=[]"""
 
 #Approach1: Finding slots through 0/1 Knapsack then TSP for each Slot is performed to find path. 
-"""def findSlots(qty):  -- DP not working
-    slots=[]
-    while(True):
-        if(len(qty)==0):
-            break
-        dp=[[0 for i in range(capacity+1)] for j in range(len(qty)+1)]
-        for i in range(len(qty)+1):
-            dp[i][0]=0
-            dp[0][i]=0
-        for i in range(1,len(qty)+1):
-            for j in range(1,capacity+1):
-                if(j>qty[i-1]):
-                    dp[i][j]=max(dp[i-1][j],dp[i-1][j-qty[i-1]]+qty[i-1])
-                else:
-                    dp[i][j]=dp[i-1][j]
-        path=[]
-        i=len(qty)
-        j=capacity
-        while(i>0 and j>0):
-            if(dp[i-1][j]==dp[i][j]):
-                i=i-1
-            else:
-                path.append(i)
-                if(j-qty[i-1]>0):
-                    j=j-qty[i-1]
-                    i-=1
-                else:
-                    break
-        slots.append(path)
-        temp=[]
-        for i in range(len(qty)):
-            if i not in path:
-                temp.append(qty[i])
-        qty=temp
-        print(slots,qty)
-    return slots"""
 
-def findSlots(qty,capacity):
+"""def findSlots(qty,capacity):
     slots=[]
     while(True):
         path=[]
@@ -104,12 +103,12 @@ def findSlots(qty,capacity):
             print(c,qty,slots,path)
             if(len(qty)==0):
                 return slots
-            c+=max(qty)
             index=[i for i,j in enumerate(qty) if j==max(qty)]
             path.append(index[0])
             temp=[qty[i] for i in range(len(qty)) if i!=index[0]]
             qty=temp
-        slots.append(path)
-slots=findSlots(qty,capacity)
+        slots.append(path)"""
+
+slots=findSlots(qty)
 print(slots)
 
