@@ -58,7 +58,7 @@ rDist=[2,3,5,1,4]
 slots=[]
 
 #Approach1: Finding slots through 0/1 Knapsack then TSP for each Slot is performed to find path. 
-def findSlots(qty):
+"""def findSlots(qty):  -- DP not working
     slots=[]
     while(True):
         if(len(qty)==0):
@@ -93,7 +93,23 @@ def findSlots(qty):
                 temp.append(qty[i])
         qty=temp
         print(slots,qty)
-    return slots
+    return slots"""
 
-slots=findSlots(qty)
+def findSlots(qty,capacity):
+    slots=[]
+    while(True):
+        path=[]
+        c=0
+        while(c<capacity):
+            print(c,qty,slots,path)
+            if(len(qty)==0):
+                return slots
+            c+=max(qty)
+            index=[i for i,j in enumerate(qty) if j==max(qty)]
+            path.append(index[0])
+            temp=[qty[i] for i in range(len(qty)) if i!=index[0]]
+            qty=temp
+        slots.append(path)
+slots=findSlots(qty,capacity)
 print(slots)
+
