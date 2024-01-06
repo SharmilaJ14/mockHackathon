@@ -1,5 +1,6 @@
 #Hackathon!
 #Level 0: Travelling salesman problem
+from scipy.sparse.csgraph import minimum_spanning_tree
 from typing import DefaultDict
 import json
 
@@ -75,6 +76,7 @@ def findMinRoute(tsp):
 cost=0
 def tsp(c):
     global cost
+    visited=[0 for i in range(len(dMat))]
     adj_vertex = 99999999
     min_val = 99999999
     visited[c] = 1
@@ -93,13 +95,14 @@ def tsp(c):
         return
     tsp(adj_vertex)
 
-#Using Twice around the tree
-def findMST(G):
-    mst=[]
-    v=[i for i in range(len(G))]
+#Christofides heuristic for TSP
+def Christofides(G):
+    mst=minimum_spanning_tree(G)
+    #mst=mst.toarray().astype(int).tolist()
+    path=[]    #Finding a closed path with minimum value
+    return path
 
-def TwiceAroundTree(G):
-    mst=findMST(G)
+
 
 #Importing the data
 f0=open("C:/Users/TEMP/Desktop/Input data/level0.json")
@@ -122,7 +125,8 @@ for i in dGraph:
     k+=1
 
 #Fixing 'r0' vertex to be the first and last vertes and then solving travelling salesman problem
-cost,route=findMinRoute(dMat)
+print(Christofides(dMat))
+"""cost,route=findMinRoute(dMat)
 visited=[0 for i in range(n+1)]
 #print(tsp(0), cost)
 op0={}
@@ -134,5 +138,6 @@ print(op0)
 
 #Output as file 
 f=open("C:/Users/TEMP/Desktop/Input data/level0_output.json",'w')
-json.dump(op0,f)
+json.dump(op0,f)"""
+
 
