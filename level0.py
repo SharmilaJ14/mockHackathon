@@ -1,6 +1,7 @@
 #Hackathon!
 #Level 0: Travelling salesman problem
 from scipy.sparse.csgraph import minimum_spanning_tree
+import numpy as np
 from typing import DefaultDict
 import json
 
@@ -98,8 +99,26 @@ def tsp(c):
 #Christofides heuristic for TSP
 def Christofides(G):
     mst=minimum_spanning_tree(G)
-    #mst=mst.toarray().astype(int).tolist()
+    mst=mst.toarray().astype(int).tolist()
     path=[]    #Finding a closed path with minimum value
+    stack=[]
+    currentVertex=0
+    while(len(path)<len(G)):
+        if currentVertex not in path:
+            path.append(currentVertex)
+        for i in range(len(mst[currentVertex])):
+            if(mst[currentVertex][i]>0):
+                stack.append(i)
+        if(len(stack)>0):
+            currentVertex=stack.pop()
+        else:
+            dist={}
+            for i in range(len(G[currentVertex])):
+                if i not in path:
+                    dist[i]=G[currentVertex][i]
+            temp = min(dist.values())
+            res = [key for key in dist if dist[key] == temp]
+            currentVertex=res[0]
     return path
 
 
@@ -125,8 +144,8 @@ for i in dGraph:
     k+=1
 
 #Fixing 'r0' vertex to be the first and last vertes and then solving travelling salesman problem
-print(Christofides(dMat))
-"""cost,route=findMinRoute(dMat)
+"""print(Christofides(dMat))
+cost,route=findMinRoute(dMat)
 visited=[0 for i in range(n+1)]
 #print(tsp(0), cost)
 op0={}
@@ -139,5 +158,33 @@ print(op0)
 #Output as file 
 f=open("C:/Users/TEMP/Desktop/Input data/level0_output.json",'w')
 json.dump(op0,f)"""
+"""from python_tsp.heuristics import solve_tsp_local_search
+route, distance = solve_tsp_local_search(np.array(dMat))"""
+"""route=Christofides(dMat)
+print(route)
+cost=0
+for i in range(len(route)-1):
+    cost+=dMat[i][i+1]
+cost+=dMat[route[-1]][0]
+print(cost)"""
 
+from python_tsp.heuristics import solve_tsp_local_search
+route,cost = solve_tsp_local_search(np.array(dMat),perturbation_scheme='ps6')
 
+"""from python_tsp.exact import solve_tsp_branch_and_bound
+xopt,fopt=solve_tsp_branch_and_bound(np.array(dMat))
+print(xopt,fopt)"""
+
+print(route,cost)
+op0={}
+path=[]
+path.append("r0")
+for i in route[1::]:
+    path.append(f"n{i-1}")
+path.append('r0')
+op0['v0']={"path":path}
+print(op0)
+
+#Output as file 
+f=open("C:/Users/TEMP/Desktop/Input data/level0_output.json",'w')
+json.dump(op0,f)
